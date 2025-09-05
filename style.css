@@ -1,0 +1,9 @@
+/* 見た目の最低限の整形（自由に変えてOK） */
+body { font-family: system-ui, sans-serif; margin: 20px; }
+nav button { margin-right: 6px; }
+section { display: none; }
+section.active { display: block; }
+
+table { border-collapse: collapse; margin-top: 8px; min-width: 560px; }
+th, td { border: 1px solid #bbb; padding: 4px 8px; text-align: left; }
+.actions button { margin-right: 4px; }
