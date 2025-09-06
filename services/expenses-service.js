@@ -8,12 +8,12 @@ import {
   softDeleteExpense,
   updateExpense,
   getExpenseById,
-} from "../repository/expensesRepository.js";
+} from "../repositories/expenses-repository.js";
 import {
   commitEntries,
   makeExpenseEntries,
   makeReversalEntries,
-} from "./ledgerService.js";
+} from "./ledger-service.js";
 
 // 一覧取得（UIは deleted を見て非表示にする）
 export async function getAllExpenses() {

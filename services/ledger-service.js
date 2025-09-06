@@ -2,7 +2,7 @@
 // 台帳ロジック
 // ========================
 
-import { appendEntries, listEntries } from "../repository/ledgerRepository.js";
+import { appendEntries, listEntries } from "../repositories/ledger-repository.js";
 
 // ユーザごとの合計
 export async function sumByUser() {

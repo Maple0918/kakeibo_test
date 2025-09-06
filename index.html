@@ -7,99 +7,96 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
   <title>2人用支出管理アプリ</title>
-  <!-- メインスタイル -->
   <link rel="stylesheet" href="style.css" />
-  <!-- 追加CSS（必要に応じて） -->
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/layout.css" />
-  <link rel="stylesheet" href="css/utilities.css" />
 </head>
 <body class="c-app">
 
-  <!-- アプリ共通ヘッダ：現在ユーザの切替 -->
+  <!-- ヘッダー：アプリ名／ログインユーザ／設定 -->
   <header class="c-app-header" role="banner">
-    <div class="c-user-switcher">
-      <label for="current-user" class="c-user-switcher__label">ログインユーザ:</label>
+    <div class="c-app-header__left">
+      <h1 class="c-app-title">2人用支出管理</h1>
+    </div>
+    <div class="c-app-header__right">
+      <label for="current-user" class="c-user-switcher__label">ログイン:</label>
       <select id="current-user" class="c-user-switcher__select js-current-user"></select>
+      <button class="c-button c-icon-button js-route" data-view="settings" aria-controls="view-settings" title="設定">⚙️</button>
     </div>
   </header>
 
-  <!-- ナビゲーション（SPA：viewの表示/非表示を切替） -->
+  <!-- ナビ（デバッグ用） -->
   <nav class="c-nav" aria-label="主ナビゲーション">
     <div class="c-nav__actions">
       <button class="c-button js-route" data-view="home" aria-controls="view-home">ホーム</button>
       <button class="c-button js-route" data-view="entry" aria-controls="view-entry">支出登録</button>
-      <button class="c-button js-route" data-view="clearance" aria-controls="view-clearance">清算申請</button>
+      <button class="c-button js-route" data-view="clearance" aria-controls="view-clearance">清算</button>
+      <button class="c-button js-route" data-view="settings" aria-controls="view-settings">設定</button>
+      <button class="c-button js-route" data-view="detail" aria-controls="view-detail">詳細／編集</button>
     </div>
   </nav>
 
-  <!-- 画面領域 -->
   <main class="c-main" role="main">
 
-    <!-- ホーム画面 -->
-    <section
-      id="view-home"
-      class="c-view c-home-view is-active js-view"
-      data-view="home"
-      aria-labelledby="home-title"
-    >
-      <h2 id="home-title" class="c-view__title">ホーム</h2>
+<!-- 1) ホーム -->
+<section
+  id="view-home"
+  class="c-view c-home-view is-active js-view"
+  data-view="home"
+  aria-labelledby="home-title"
+>
+  <h2 id="home-title" class="c-view__title">ホーム</h2>
 
-      <!-- 清算通知（ある場合のみ表示） -->
-      <section class="c-panel c-clearance-notice" aria-labelledby="clearance-notice-title">
-        <h3 id="clearance-notice-title" class="c-panel__title">清算通知</h3>
-        <div class="c-notice js-clearance-notice" aria-live="polite">
-          <!-- 例：現在清算はありません / Aさんから清算申請が届いています など -->
-          現在清算はありません
-        </div>
-        <div class="c-panel__actions">
-          <!-- 必要時のみ有効化（JSで制御） -->
-          <button class="c-button js-clearance-approve" disabled>承認</button>
-          <button class="c-button js-clearance-reject" disabled>却下</button>
-        </div>
-      </section>
+  <!-- メイン1：差額サマリー（表示のみ） -->
+  <section class="c-panel" aria-labelledby="clearance-summary-title">
+    <h3 id="clearance-summary-title" class="c-panel__title">差額サマリー</h3>
+    <p class="c-text js-clearance-info">差額計算中...</p>
+  </section>
 
-      <!-- 支出一覧 -->
-      <section class="c-panel" aria-labelledby="expense-list-title">
-        <h3 id="expense-list-title" class="c-panel__title">支出一覧</h3>
+  <!-- メイン2：支出一覧（10件まではJSで制御） -->
+  <section class="c-panel" aria-labelledby="expense-list-title">
+    <h3 id="expense-list-title" class="c-panel__title">支出一覧</h3>
+    <div class="c-expense-table-wrapper">
+      <table class="c-expense-table" aria-describedby="expense-list-title">
+        <thead class="c-expense-table__head">
+          <tr class="c-expense-table__row c-expense-table__row--head">
+            <th scope="col" class="c-expense-table__cell">カテゴリ</th>
+            <th scope="col" class="c-expense-table__cell">金額</th>
+            <th scope="col" class="c-expense-table__cell">日付</th>
+            <th scope="col" class="c-expense-table__cell">支払者</th>
+          </tr>
+        </thead>
+        <tbody class="c-expense-table__body js-expense-list">
+          <!-- JSが行を最大10件まで挿入 -->
+        </tbody>
+      </table>
+      <div class="c-notice is-loading js-expense-loading" hidden>読み込み中...</div>
+      <div class="c-notice is-error js-expense-error" hidden>読み込みに失敗しました</div>
+      <div class="c-notice is-empty js-expense-empty" hidden>データがありません</div>
+    </div>
+  </section>
 
-        <div class="c-expense-table-wrapper">
-          <table class="c-expense-table" aria-describedby="expense-list-title">
-            <thead class="c-expense-table__head">
-              <tr class="c-expense-table__row c-expense-table__row--head">
-                <th scope="col" class="c-expense-table__cell">日付</th>
-                <th scope="col" class="c-expense-table__cell">支払者</th>
-                <th scope="col" class="c-expense-table__cell">カテゴリ</th>
-                <th scope="col" class="c-expense-table__cell">金額</th>
-                <th scope="col" class="c-expense-table__cell">メモ</th>
-                <th scope="col" class="c-expense-table__cell">登録者</th>
-                <th scope="col" class="c-expense-table__cell">操作</th>
-                <th scope="col" class="c-expense-table__cell">最終更新</th>
-              </tr>
-            </thead>
-            <tbody class="c-expense-table__body js-expense-list">
-              <!-- JSで <tr class="c-expense-table__row"> を差し込み -->
-            </tbody>
-          </table>
+  <!-- サブメイン：もっと見る / FAB -->
+  <section class="c-panel c-submain" aria-label="サブメイン">
+    <button class="c-button js-home-more">もっと見る</button>
+    <!-- 右下固定はCSSで position: fixed などを適用 -->
+    <button
+      class="c-fab c-button js-route"
+      data-view="entry"
+      aria-controls="view-entry"
+      title="支出を追加"
+    >＋</button>
+  </section>
 
-          <!-- 状態表示（空/読込中/エラー） -->
-          <div class="c-notice is-loading js-expense-loading" hidden>読み込み中...</div>
-          <div class="c-notice is-error js-expense-error" hidden>読み込みに失敗しました</div>
-          <div class="c-notice is-empty js-expense-empty" hidden>データがありません</div>
-        </div>
-      </section>
+  <!-- メイン3：主要アクション（清算へ） -->
+  <section class="c-panel" aria-label="主要アクション">
+    <div class="c-panel__actions">
+      <button class="c-button c-button--primary js-route" data-view="clearance" aria-controls="view-clearance">
+        清算する
+      </button>
+    </div>
+  </section>
+</section>
 
-      <!-- 清算履歴（読み物的） -->
-      <section class="c-panel" aria-labelledby="clearance-history-title">
-        <h3 id="clearance-history-title" class="c-panel__title">清算履歴</h3>
-        <ul class="c-history-list js-clearance-history">
-          <!-- JSで <li class="c-history-list__item"> を差し込み -->
-        </ul>
-      </section>
-    </section>
-
-    <!-- 支出登録画面 -->
+    <!-- 2) 支出入力 -->
     <section
       id="view-entry"
       class="c-view c-entry-view js-view"
@@ -107,14 +104,39 @@
       aria-labelledby="entry-title"
       hidden
     >
-      <h2 id="entry-title" class="c-view__title">支出登録</h2>
+      <h2 id="entry-title" class="c-view__title">支出を追加</h2>
 
       <form id="expense-form" class="c-form js-expense-form" novalidate>
+        <!-- 日付：今日/昨日/カレンダー -->
+        <div class="c-form__row">
+          <label class="c-form__label">日付</label>
+          <div class="c-form__inputs">
+            <button type="button" class="c-button js-date-today">今日</button>
+            <button type="button" class="c-button js-date-yesterday">昨日</button>
+            <input class="c-input" type="date" id="date" />
+          </div>
+        </div>
+
+        <!-- 支払者：A/B（ログインユーザ保持） -->
         <div class="c-form__row">
           <label class="c-form__label" for="payer">支払者</label>
           <input class="c-input" type="text" id="payer" readonly />
         </div>
 
+        <!-- カテゴリ：5つ固定 -->
+        <div class="c-form__row">
+          <label class="c-form__label">カテゴリ</label>
+          <div class="c-category-picker">
+            <button type="button" class="c-chip js-cat" data-cat="食費">🍔 食費</button>
+            <button type="button" class="c-chip js-cat" data-cat="交通">🚃 交通</button>
+            <button type="button" class="c-chip js-cat" data-cat="日用品">🛒 日用品</button>
+            <button type="button" class="c-chip js-cat" data-cat="娯楽">🎉 娯楽</button>
+            <button type="button" class="c-chip js-cat" data-cat="その他">その他</button>
+          </div>
+          <input type="hidden" id="category" />
+        </div>
+
+        <!-- 金額：テンキーUIはJSで／ここは通常input -->
         <div class="c-form__row">
           <label class="c-form__label" for="amount">金額</label>
           <input
@@ -128,23 +150,14 @@
           />
         </div>
 
-        <div class="c-form__row">
-          <label class="c-form__label" for="date">日付</label>
-          <input class="c-input" type="date" id="date" />
-        </div>
-
-        <div class="c-form__row">
-          <label class="c-form__label" for="category">カテゴリ</label>
-          <input class="c-input" type="text" id="category" />
-        </div>
-
+        <!-- メモ -->
         <div class="c-form__row">
           <label class="c-form__label" for="memo">メモ</label>
           <input class="c-input" type="text" id="memo" />
         </div>
 
         <div class="c-form__actions">
-          <button class="c-button" type="submit">保存</button>
+          <button class="c-button c-button--primary" type="submit">保存する</button>
         </div>
 
         <!-- フォーム状態 -->
@@ -153,7 +166,66 @@
       </form>
     </section>
 
-    <!-- 清算申請画面 -->
+    <!-- 3) 詳細／編集 -->
+    <section
+      id="view-detail"
+      class="c-view c-detail-view js-view"
+      data-view="detail"
+      aria-labelledby="detail-title"
+      hidden
+    >
+      <h2 id="detail-title" class="c-view__title">支出の詳細</h2>
+
+      <!-- メイン1：概要 -->
+      <section class="c-panel" aria-labelledby="detail-summary-title">
+        <h3 id="detail-summary-title" class="c-panel__title">概要</h3>
+        <div class="c-detail-summary">
+          <div class="c-detail-summary__icon js-detail-icon">🍔</div>
+          <div class="c-detail-summary__main">
+            <div class="c-detail-summary__category js-detail-category">カテゴリ</div>
+            <div class="c-detail-summary__amount js-detail-amount">0円</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- メイン2：詳細情報 -->
+      <section class="c-panel" aria-labelledby="detail-info-title">
+        <h3 id="detail-info-title" class="c-panel__title">詳細情報</h3>
+        <dl class="c-detail-list">
+          <div class="c-detail-list__row">
+            <dt>日付</dt><dd class="js-detail-date">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>支払者</dt><dd class="js-detail-payer">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>カテゴリ</dt><dd class="js-detail-category2">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>金額</dt><dd class="js-detail-amount2">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>メモ</dt><dd class="js-detail-memo">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>登録者</dt><dd class="js-detail-createdBy">-</dd>
+          </div>
+          <div class="c-detail-list__row">
+            <dt>最終更新</dt><dd class="js-detail-updated">-</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- メイン3：主要アクション -->
+      <section class="c-panel" aria-label="主要アクション">
+        <div class="c-panel__actions">
+          <button class="c-button js-detail-edit">編集する</button>
+          <button class="c-button c-button--danger js-detail-delete">削除する</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- 4) 清算 -->
     <section
       id="view-clearance"
       class="c-view c-clearance-view js-view"
@@ -161,24 +233,72 @@
       aria-labelledby="clearance-title"
       hidden
     >
-      <h2 id="clearance-title" class="c-view__title">清算申請</h2>
+      <h2 id="clearance-title" class="c-view__title">清算</h2>
 
-      <div class="c-panel">
-        <p id="settlement-info" class="c-text js-clearance-info">差額計算中...</p>
+      <!-- メイン1：現在の差額サマリー -->
+      <section class="c-panel" aria-labelledby="clearance-summary-title">
+        <h3 id="clearance-summary-title" class="c-panel__title">差額サマリー</h3>
+        <p class="c-text js-clearance-info">差額計算中...</p>
+      </section>
+
+      <!-- メイン2：清算履歴（直近5件+もっと見る） -->
+      <section class="c-panel" aria-labelledby="clearance-history-title">
+        <h3 id="clearance-history-title" class="c-panel__title">清算履歴</h3>
+        <ul class="c-history-list js-clearance-history"></ul>
         <div class="c-panel__actions">
-          <button id="settle-btn" class="c-button js-clearance-apply">清算申請</button>
+          <button class="c-button js-clearance-more">もっと見る</button>
         </div>
+      </section>
+
+      <!-- メイン3：状態遷移（ボタンはJSで制御） -->
+      <section class="c-panel" aria-label="清算アクション">
+        <!-- 状態メッセージ（任意）：申請中/承認待ちなどをJSで表示 -->
+        <p class="c-text js-clearance-state" aria-live="polite"></p>
+
+        <div class="c-panel__actions js-clearance-actions">
+          <!-- 状態1：誰も申請していない -->
+          <button class="c-button c-button--primary js-clearance-apply">清算を申請する</button>
+
+          <!-- 状態2：自分が申請中 -->
+          <button class="c-button c-button--danger js-clearance-cancel" hidden>申請を取り消す</button>
+
+          <!-- 状態3：相手が申請中 -->
+          <button class="c-button c-button--primary js-clearance-approve2" hidden>申請を承認する</button>
+          <button class="c-button c-button--danger js-clearance-reject2" hidden>申請を棄却する</button>
+        </div>
+
+        <!-- 状態表示（1組のみ） -->
         <div class="c-notice is-loading js-clearance-loading" hidden>計算中...</div>
         <div class="c-notice is-error js-clearance-error" hidden>計算に失敗しました</div>
-      </div>
+      </section>
+
+    </section>
+
+    <!-- 5) 設定（MVP） -->
+    <section
+      id="view-settings"
+      class="c-view c-settings-view js-view"
+      data-view="settings"
+      aria-labelledby="settings-title"
+      hidden
+    >
+      <h2 id="settings-title" class="c-view__title">⚙️ 設定</h2>
+
+      <section class="c-panel">
+        <ul class="c-list">
+          <li>ユーザー名変更（準備中）</li>
+          <li>カテゴリ編集（準備中）</li>
+          <li>データエクスポート（準備中）</li>
+          <li>ユーザー識別色変更（将来拡張）</li>
+        </ul>
+      </section>
     </section>
 
   </main>
 
-  <!-- JSから表示切替するためのガード。is-active + hidden を併用 -->
   <noscript>このアプリはJavaScript有効時に動作します。</noscript>
 
-  <!-- エントリーポイント（そのまま） -->
+  <!-- エントリーポイント -->
   <script type="module" src="core/main.js"></script>
 </body>
 </html>
