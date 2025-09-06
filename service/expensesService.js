@@ -2,21 +2,13 @@
 // 支出ロジック
 // ========================
 
-// ========================
-// logic/expensesService.js
-// 支出ロジック（ビジネスルール）
-// - 新規：等分仕訳を追加（createdBy, lastUpdated を付与）
-// - 編集：既存読込 → 逆仕訳 → メタ更新（createdBy/payer維持, lastUpdated更新）→ 新仕訳
-// - 削除：逆仕訳 → 論理削除
-// ========================
-
 import {
   createExpense,
   listExpenses,
   softDeleteExpense,
   updateExpense,
   getExpenseById,
-} from "../db/expensesRepository.js";
+} from "../repository/expensesRepository.js";
 import {
   commitEntries,
   makeExpenseEntries,

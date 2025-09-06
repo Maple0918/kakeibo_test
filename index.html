@@ -1,77 +1,184 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>2人用支出管理アプリ（モック）</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>2人用支出管理アプリ</title>
+  <!-- メインスタイル -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- 追加CSS（必要に応じて） -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
 </head>
-<body>
+<body class="c-app">
 
-  <!-- 現在ログイン中のユーザ（Aさん/Bさん）の切替 -->
-  <header>
-    <label>ログインユーザ:
-      <select id="current-user"></select>
-    </label>
+  <!-- アプリ共通ヘッダ：現在ユーザの切替 -->
+  <header class="c-app-header" role="banner">
+    <div class="c-user-switcher">
+      <label for="current-user" class="c-user-switcher__label">ログインユーザ:</label>
+      <select id="current-user" class="c-user-switcher__select js-current-user"></select>
+    </div>
   </header>
 
-  <!-- 簡易ナビゲーション（SPA的に section の表示/非表示を切り替える） -->
-  <nav>
-    <button id="nav-home">ホーム</button>
-    <button id="nav-add">支出登録</button>
-    <button id="nav-settlement">清算申請</button>
+  <!-- ナビゲーション（SPA：viewの表示/非表示を切替） -->
+  <nav class="c-nav" aria-label="主ナビゲーション">
+    <div class="c-nav__actions">
+      <button class="c-button js-route" data-view="home" aria-controls="view-home">ホーム</button>
+      <button class="c-button js-route" data-view="entry" aria-controls="view-entry">支出登録</button>
+      <button class="c-button js-route" data-view="clearance" aria-controls="view-clearance">清算申請</button>
+    </div>
   </nav>
 
-  <!-- ホーム画面 -->
-  <section id="home" class="active">
-    <h2>ホーム</h2>
+  <!-- 画面領域 -->
+  <main class="c-main" role="main">
 
-    <!-- 清算申請がある場合にメッセージと承認/却下ボタンを表示 -->
-    <h3>清算通知</h3>
-    <p id="settlement-msg">現在清算はありません</p>
+    <!-- ホーム画面 -->
+    <section
+      id="view-home"
+      class="c-view c-home-view is-active js-view"
+      data-view="home"
+      aria-labelledby="home-title"
+    >
+      <h2 id="home-title" class="c-view__title">ホーム</h2>
 
-    <h3>支出一覧</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>日付</th>
-          <th>支払者</th>
-          <th>カテゴリ</th>
-          <th>金額</th>
-          <th>メモ</th>
-          <th>登録者</th>
-          <th>操作</th>
-          <th>最終更新</th>
-        </tr>
-      </thead>
-      <tbody id="expense-list"></tbody>
-    </table>
+      <!-- 清算通知（ある場合のみ表示） -->
+      <section class="c-panel c-clearance-notice" aria-labelledby="clearance-notice-title">
+        <h3 id="clearance-notice-title" class="c-panel__title">清算通知</h3>
+        <div class="c-notice js-clearance-notice" aria-live="polite">
+          <!-- 例：現在清算はありません / Aさんから清算申請が届いています など -->
+          現在清算はありません
+        </div>
+        <div class="c-panel__actions">
+          <!-- 必要時のみ有効化（JSで制御） -->
+          <button class="c-button js-clearance-approve" disabled>承認</button>
+          <button class="c-button js-clearance-reject" disabled>却下</button>
+        </div>
+      </section>
 
-    <!-- 読み物としての清算履歴（合計額のみ） -->
-    <h3>清算履歴</h3>
-    <ul id="settlement-history"></ul>
-  </section>
+      <!-- 支出一覧 -->
+      <section class="c-panel" aria-labelledby="expense-list-title">
+        <h3 id="expense-list-title" class="c-panel__title">支出一覧</h3>
 
-  <!-- 支出登録画面 -->
-  <section id="add">
-    <h2>支出登録</h2>
-    <form id="expense-form">
-      <label>支払者: <input type="text" id="payer" readonly></label><br>
-      <label>金額:<input type="number" id="amount" required min="1" step="1" inputmode="numeric"></label>
-      <label>日付: <input type="date" id="date"></label><br>
-      <label>カテゴリ: <input type="text" id="category"></label><br>
-      <label>メモ: <input type="text" id="memo"></label><br>
-      <button type="submit">保存</button>
-    </form>
-  </section>
+        <div class="c-expense-table-wrapper">
+          <table class="c-expense-table" aria-describedby="expense-list-title">
+            <thead class="c-expense-table__head">
+              <tr class="c-expense-table__row c-expense-table__row--head">
+                <th scope="col" class="c-expense-table__cell">日付</th>
+                <th scope="col" class="c-expense-table__cell">支払者</th>
+                <th scope="col" class="c-expense-table__cell">カテゴリ</th>
+                <th scope="col" class="c-expense-table__cell">金額</th>
+                <th scope="col" class="c-expense-table__cell">メモ</th>
+                <th scope="col" class="c-expense-table__cell">登録者</th>
+                <th scope="col" class="c-expense-table__cell">操作</th>
+                <th scope="col" class="c-expense-table__cell">最終更新</th>
+              </tr>
+            </thead>
+            <tbody class="c-expense-table__body js-expense-list">
+              <!-- JSで <tr class="c-expense-table__row"> を差し込み -->
+            </tbody>
+          </table>
 
-  <!-- 清算申請画面（差額計算の文言と申請ボタン） -->
-  <section id="settlement">
-    <h2>清算申請</h2>
-    <p id="settlement-info">差額計算中...</p>
-    <button id="settle-btn">清算申請</button>
-  </section>
+          <!-- 状態表示（空/読込中/エラー） -->
+          <div class="c-notice is-loading js-expense-loading" hidden>読み込み中...</div>
+          <div class="c-notice is-error js-expense-error" hidden>読み込みに失敗しました</div>
+          <div class="c-notice is-empty js-expense-empty" hidden>データがありません</div>
+        </div>
+      </section>
 
-  <!-- ESM（モジュール）でエントリーポイントを読み込む -->
-  <script type="module" src="app/main.js"></script>
+      <!-- 清算履歴（読み物的） -->
+      <section class="c-panel" aria-labelledby="clearance-history-title">
+        <h3 id="clearance-history-title" class="c-panel__title">清算履歴</h3>
+        <ul class="c-history-list js-clearance-history">
+          <!-- JSで <li class="c-history-list__item"> を差し込み -->
+        </ul>
+      </section>
+    </section>
+
+    <!-- 支出登録画面 -->
+    <section
+      id="view-entry"
+      class="c-view c-entry-view js-view"
+      data-view="entry"
+      aria-labelledby="entry-title"
+      hidden
+    >
+      <h2 id="entry-title" class="c-view__title">支出登録</h2>
+
+      <form id="expense-form" class="c-form js-expense-form" novalidate>
+        <div class="c-form__row">
+          <label class="c-form__label" for="payer">支払者</label>
+          <input class="c-input" type="text" id="payer" readonly />
+        </div>
+
+        <div class="c-form__row">
+          <label class="c-form__label" for="amount">金額</label>
+          <input
+            class="c-input"
+            type="number"
+            id="amount"
+            required
+            min="1"
+            step="1"
+            inputmode="numeric"
+          />
+        </div>
+
+        <div class="c-form__row">
+          <label class="c-form__label" for="date">日付</label>
+          <input class="c-input" type="date" id="date" />
+        </div>
+
+        <div class="c-form__row">
+          <label class="c-form__label" for="category">カテゴリ</label>
+          <input class="c-input" type="text" id="category" />
+        </div>
+
+        <div class="c-form__row">
+          <label class="c-form__label" for="memo">メモ</label>
+          <input class="c-input" type="text" id="memo" />
+        </div>
+
+        <div class="c-form__actions">
+          <button class="c-button" type="submit">保存</button>
+        </div>
+
+        <!-- フォーム状態 -->
+        <div class="c-notice is-loading js-form-loading" hidden>保存中...</div>
+        <div class="c-notice is-error js-form-error" hidden>保存に失敗しました</div>
+      </form>
+    </section>
+
+    <!-- 清算申請画面 -->
+    <section
+      id="view-clearance"
+      class="c-view c-clearance-view js-view"
+      data-view="clearance"
+      aria-labelledby="clearance-title"
+      hidden
+    >
+      <h2 id="clearance-title" class="c-view__title">清算申請</h2>
+
+      <div class="c-panel">
+        <p id="settlement-info" class="c-text js-clearance-info">差額計算中...</p>
+        <div class="c-panel__actions">
+          <button id="settle-btn" class="c-button js-clearance-apply">清算申請</button>
+        </div>
+        <div class="c-notice is-loading js-clearance-loading" hidden>計算中...</div>
+        <div class="c-notice is-error js-clearance-error" hidden>計算に失敗しました</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JSから表示切替するためのガード。is-active + hidden を併用 -->
+  <noscript>このアプリはJavaScript有効時に動作します。</noscript>
+
+  <!-- エントリーポイント（そのまま） -->
+  <script type="module" src="core/main.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 // 清算ロジック
 // ========================
 
-import { listSettlements, createSettlement, updateSettlementStatus } from "../db/settlementsRepository.js";
+import { listSettlements, createSettlement, updateSettlementStatus } from "../repository/settlementsRepository.js";
 import { sumByUser, commitEntries, makeSettlementEntries } from "./ledgerService.js";
 
 export async function calcCurrentDiff() {

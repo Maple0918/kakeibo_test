@@ -1,9 +1,292 @@
-/* 見た目の最低限の整形（自由に変えてOK） */
-body { font-family: system-ui, sans-serif; margin: 20px; }
-nav button { margin-right: 6px; }
-section { display: none; }
-section.active { display: block; }
+/* ========================
+ * 基本スタイル
+ * ======================== */
+body { 
+  font-family: system-ui, sans-serif; 
+  margin: 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+}
 
-table { border-collapse: collapse; margin-top: 8px; min-width: 560px; }
-th, td { border: 1px solid #bbb; padding: 4px 8px; text-align: left; }
-.actions button { margin-right: 4px; }
+/* ========================
+ * アプリケーション構造
+ * ======================== */
+.c-app {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ========================
+ * ヘッダー
+ * ======================== */
+.c-app-header {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.c-user-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.c-user-switcher__label {
+  font-weight: 500;
+}
+
+.c-user-switcher__select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+/* ========================
+ * ナビゲーション
+ * ======================== */
+.c-nav {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.c-nav__actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ========================
+ * ボタン
+ * ======================== */
+.c-button {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.c-button:hover {
+  background: #f8f9fa;
+}
+
+.c-button.is-active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.c-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========================
+ * メイン領域
+ * ======================== */
+.c-main {
+  min-height: 60vh;
+}
+
+/* ========================
+ * ビュー（画面）
+ * ======================== */
+.c-view {
+  display: none;
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.c-view.is-active {
+  display: block;
+}
+
+.c-view__title {
+  margin: 0 0 24px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+/* ========================
+ * パネル
+ * ======================== */
+.c-panel {
+  margin-bottom: 32px;
+  padding: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  background: #fafbfc;
+}
+
+.c-panel__title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #495057;
+}
+
+.c-panel__actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* ========================
+ * 通知
+ * ======================== */
+.c-notice {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.c-notice.is-loading {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.c-notice.is-error {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.c-notice.is-empty {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #e1bee7;
+}
+
+/* ========================
+ * テーブル
+ * ======================== */
+.c-expense-table-wrapper {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.c-expense-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.c-expense-table__cell {
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.c-expense-table__head .c-expense-table__cell {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.c-expense-table__row:nth-child(even) {
+  background: #f8f9fa;
+}
+
+/* ========================
+ * フォーム
+ * ======================== */
+.c-form {
+  max-width: 500px;
+}
+
+.c-form__row {
+  margin-bottom: 20px;
+}
+
+.c-form__label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.c-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.c-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.c-input[readonly] {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.c-form__actions {
+  margin-top: 24px;
+}
+
+/* ========================
+ * 履歴リスト
+ * ======================== */
+.c-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.c-history-list__item {
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.c-history-list__item:last-child {
+  border-bottom: none;
+}
+
+/* ========================
+ * テキスト
+ * ======================== */
+.c-text {
+  margin: 0;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* ========================
+ * レスポンシブ調整
+ * ======================== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .c-nav__actions {
+    flex-direction: column;
+  }
+  
+  .c-button {
+    width: 100%;
+  }
+  
+  .c-expense-table {
+    font-size: 12px;
+  }
+  
+  .c-expense-table__cell {
+    padding: 8px 4px;
+  }
+}
