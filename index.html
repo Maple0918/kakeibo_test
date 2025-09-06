@@ -72,11 +72,9 @@
       <div class="c-notice is-error js-expense-error" hidden>読み込みに失敗しました</div>
       <div class="c-notice is-empty js-expense-empty" hidden>データがありません</div>
     </div>
-  </section>
 
-  <!-- サブメイン：もっと見る / FAB -->
-  <section class="c-panel c-submain" aria-label="サブメイン">
-    <button class="c-button js-home-more">もっと見る</button>
+      <!-- サブメイン：もっと見る / FAB -->
+    <!-- <button class="c-button js-home-more">もっと見る</button> -->
     <!-- 右下固定はCSSで position: fixed などを適用 -->
     <button
       class="c-fab c-button js-route"
@@ -84,7 +82,9 @@
       aria-controls="view-entry"
       title="支出を追加"
     >＋</button>
+
   </section>
+
 
   <!-- メイン3：主要アクション（清算へ） -->
   <section class="c-panel" aria-label="主要アクション">
@@ -96,75 +96,118 @@
   </section>
 </section>
 
-    <!-- 2) 支出入力 -->
-    <section
-      id="view-entry"
-      class="c-view c-entry-view js-view"
-      data-view="entry"
-      aria-labelledby="entry-title"
-      hidden
-    >
-      <h2 id="entry-title" class="c-view__title">支出を追加</h2>
+<!-- 2) 支出入力 -->
+<section
+  id="view-entry"
+  class="c-view c-entry-view js-view"
+  data-view="entry"
+  aria-labelledby="entry-title"
+  hidden
+>
+  <h2 id="entry-title" class="c-view__title">支出を追加</h2>
 
-      <form id="expense-form" class="c-form js-expense-form" novalidate>
-        <!-- 日付：今日/昨日/カレンダー -->
-        <div class="c-form__row">
-          <label class="c-form__label">日付</label>
-          <div class="c-form__inputs">
-            <button type="button" class="c-button js-date-today">今日</button>
-            <button type="button" class="c-button js-date-yesterday">昨日</button>
-            <input class="c-input" type="date" id="date" />
-          </div>
-        </div>
+  <form id="expense-form" class="c-form js-expense-form" novalidate>
+  <!-- 日付：今日/昨日/カレンダー -->
+  <div class="c-form__row">
+    <label class="c-form__label" for="date">日付</label>
+    <div class="c-form__inputs">
+      <button type="button" class="c-button js-date-today">今日</button>
+      <button type="button" class="c-button js-date-yesterday">昨日</button>
+      <input class="c-input" type="date" id="date" required aria-describedby="err-date" />
+    </div>
+    <p id="err-date" class="c-form__error" hidden>日付を入力してください</p>
+  </div>
 
-        <!-- 支払者：A/B（ログインユーザ保持） -->
-        <div class="c-form__row">
-          <label class="c-form__label" for="payer">支払者</label>
-          <input class="c-input" type="text" id="payer" readonly />
-        </div>
+    <!-- 支払者：A/B（ログインユーザ保持） -->
+    <div class="c-form__row">
+      <label class="c-form__label" for="payer">支払者</label>
+      <input class="c-input" type="text" id="payer" readonly />
+    </div>
 
-        <!-- カテゴリ：5つ固定 -->
-        <div class="c-form__row">
-          <label class="c-form__label">カテゴリ</label>
-          <div class="c-category-picker">
-            <button type="button" class="c-chip js-cat" data-cat="食費">🍔 食費</button>
-            <button type="button" class="c-chip js-cat" data-cat="交通">🚃 交通</button>
-            <button type="button" class="c-chip js-cat" data-cat="日用品">🛒 日用品</button>
-            <button type="button" class="c-chip js-cat" data-cat="娯楽">🎉 娯楽</button>
-            <button type="button" class="c-chip js-cat" data-cat="その他">その他</button>
-          </div>
-          <input type="hidden" id="category" />
-        </div>
+    <!-- カテゴリ：5つ固定 -->
+    <div class="c-form__row">
+      <label class="c-form__label">カテゴリ</label>
+      <div class="c-category-picker" role="group" aria-label="カテゴリの選択">
+        <button type="button" class="c-chip js-cat" data-cat="食費">🍔 食費</button>
+        <button type="button" class="c-chip js-cat" data-cat="交通">🚃 交通</button>
+        <button type="button" class="c-chip js-cat" data-cat="日用品">🛒 日用品</button>
+        <button type="button" class="c-chip js-cat" data-cat="娯楽">🎉 娯楽</button>
+        <button type="button" class="c-chip js-cat" data-cat="その他">その他</button>
+      </div>
+      <input type="hidden" id="category" required aria-describedby="err-category" />
+      <p id="err-category" class="c-form__error" hidden>カテゴリを選択してください</p>
+    </div>
+<!-- 金額：テンキーUI（表示＋式）／内部値は #amount(hidden) に保持 -->
+<div class="c-form__row">
+  <label class="c-form__label" for="amount-display">金額</label>
 
-        <!-- 金額：テンキーUIはJSで／ここは通常input -->
-        <div class="c-form__row">
-          <label class="c-form__label" for="amount">金額</label>
-          <input
-            class="c-input"
-            type="number"
-            id="amount"
-            required
-            min="1"
-            step="1"
-            inputmode="numeric"
-          />
-        </div>
+  <!-- 内部値（不可視） -->
+  <input
+    type="hidden"
+    id="amount"
+    name="amount"
+    value="0"
+  />
 
-        <!-- メモ -->
-        <div class="c-form__row">
-          <label class="c-form__label" for="memo">メモ</label>
-          <input class="c-input" type="text" id="memo" />
-        </div>
+  <!-- 金額の表示（式＋桁区切り） -->
+  <div class="c-amount-displaybox" aria-live="polite" aria-atomic="true">
+    <div id="amount-formula" class="c-amount-formula"></div>
+    <div class="c-amount-value" id="amount-displaybox">
+      <!-- <span class="c-amount-prefix">¥</span> -->
+      <span id="amount-display">0</span><span class="c-amount-suffix">円</span>
+    </div>
+  </div>
+</div>
 
-        <div class="c-form__actions">
-          <button class="c-button c-button--primary" type="submit">保存する</button>
-        </div>
+<!-- アプリ内テンキー -->
+<div class="c-form__row">
+  <div class="c-numpad js-numpad" role="group" aria-label="テンキー">
+    <div class="c-numpad-row">
+      <button type="button" class="c-key js-key" data-key="7">7</button>
+      <button type="button" class="c-key js-key" data-key="8">8</button>
+      <button type="button" class="c-key js-key" data-key="9">9</button>
+      <button type="button" class="c-key js-key" data-op="÷">÷</button>
+    </div>
+    <div class="c-numpad-row">
+      <button type="button" class="c-key js-key" data-key="4">4</button>
+      <button type="button" class="c-key js-key" data-key="5">5</button>
+      <button type="button" class="c-key js-key" data-key="6">6</button>
+      <button type="button" class="c-key js-key" data-op="×">×</button>
+    </div>
+    <div class="c-numpad-row">
+      <button type="button" class="c-key js-key" data-key="1">1</button>
+      <button type="button" class="c-key js-key" data-key="2">2</button>
+      <button type="button" class="c-key js-key" data-key="3">3</button>
+      <button type="button" class="c-key js-key" data-op="-">-</button>
+    </div>
+    <div class="c-numpad-row">
+      <button type="button" class="c-key js-key" data-key="0">0</button>
+      <button type="button" class="c-key js-key c-key--warn" data-action="clear">C</button>
+      <button type="button" class="c-key js-key" data-action="back" aria-label="1文字削除">⌫</button>
+      <button type="button" class="c-key js-key" data-op="+">+</button>
+    </div>
+    <div class="c-numpad-row">
+      <button type="button" class="c-key js-key c-key--action c-key--wide" data-action="equal">=</button>
+      <button type="button" class="c-key js-key c-key--action c-key--wide" data-action="ok">OK</button>
+    </div>
+  </div>
+</div>
 
-        <!-- フォーム状態 -->
-        <div class="c-notice is-loading js-form-loading" hidden>保存中...</div>
-        <div class="c-notice is-error js-form-error" hidden>保存に失敗しました</div>
-      </form>
-    </section>
+    <!-- メモ -->
+    <div class="c-form__row">
+      <label class="c-form__label" for="memo">メモ</label>
+      <input class="c-input" type="text" id="memo" />
+    </div>
+
+    <div class="c-form__actions">
+      <button class="c-button c-button--primary" type="submit">保存する</button>
+    </div>
+
+    <!-- フォーム状態 -->
+    <div class="c-notice is-loading js-form-loading" hidden>保存中...</div>
+    <div class="c-notice is-error js-form-error" hidden>保存に失敗しました</div>
+  </form>
+</section>
 
     <!-- 3) 詳細／編集 -->
     <section
@@ -177,18 +220,6 @@
       <h2 id="detail-title" class="c-view__title">支出の詳細</h2>
 
       <!-- メイン1：概要 -->
-      <section class="c-panel" aria-labelledby="detail-summary-title">
-        <h3 id="detail-summary-title" class="c-panel__title">概要</h3>
-        <div class="c-detail-summary">
-          <div class="c-detail-summary__icon js-detail-icon">🍔</div>
-          <div class="c-detail-summary__main">
-            <div class="c-detail-summary__category js-detail-category">カテゴリ</div>
-            <div class="c-detail-summary__amount js-detail-amount">0円</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- メイン2：詳細情報 -->
       <section class="c-panel" aria-labelledby="detail-info-title">
         <h3 id="detail-info-title" class="c-panel__title">詳細情報</h3>
         <dl class="c-detail-list">
@@ -215,6 +246,9 @@
           </div>
         </dl>
       </section>
+
+      <!-- メイン2：詳細情報 -->
+<!-- 要素なし -->
 
       <!-- メイン3：主要アクション -->
       <section class="c-panel" aria-label="主要アクション">
@@ -245,9 +279,12 @@
       <section class="c-panel" aria-labelledby="clearance-history-title">
         <h3 id="clearance-history-title" class="c-panel__title">清算履歴</h3>
         <ul class="c-history-list js-clearance-history"></ul>
-        <div class="c-panel__actions">
+ <div class="c-notice is-loading js-clearance-loading" hidden>読み込み中...</div>
+<div class="c-notice is-error   js-clearance-error" hidden>読み込みに失敗しました</div>
+<div class="c-notice is-empty   js-clearance-empty" hidden>データがありません</div>
+        <!-- <div class="c-panel__actions">
           <button class="c-button js-clearance-more">もっと見る</button>
-        </div>
+        </div> -->
       </section>
 
       <!-- メイン3：状態遷移（ボタンはJSで制御） -->

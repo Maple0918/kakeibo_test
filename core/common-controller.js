@@ -3,9 +3,11 @@
 // 共通配線：ユーザ切替／ルーティング／支出フォーム／一覧・履歴／詳細フック
 // ========================
 
-
 import { currentUser, setCurrentUser, editingId, setEditingId } from "./app-state.js";
 import { show } from "./router.js";
+
+import { toast } from "../ui/toast.js";
+import { initAmountNumpad } from "../ui/numpad.js";
 
 // View
 import { renderExpensesTable } from "../ui/expenses-view.js";
@@ -71,8 +73,16 @@ function bindRoutes() {
       } else if (view === "entry") {
         const payerInput = $("#payer");
         if (payerInput) payerInput.value = currentUser;
+
+        // ★日付のデフォルト＝今日（既に値があれば上書きしない）
+        const dateEl = document.getElementById("date");
+        if (dateEl && !dateEl.value) {
+          dateEl.value = new Date().toISOString().slice(0, 10);
+        }
+
+        // 金額テンキーを遅延初期化（重複初期化でも安全な実装）
+        initAmountNumpad();
       }
-      // "clearance" は clearance controller 側で初期化
     });
   });
 }
@@ -95,13 +105,26 @@ function bindEntryForm() {
     };
 
     // バリデーション（最小限）
-    if (!Number.isFinite(payload.amount) || payload.amount <= 0) { $("#amount")?.focus(); return; }
-    if (!payload.date) { $("#date")?.focus(); return; }
-    if (!payload.category) { $(".js-cat")?.focus(); return; }
+    if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
+      toast.error("金額を入力してください");
+      // hidden #amount ではなく可視要素にフォーカス誘導
+      document.querySelector(".js-numpad .js-key[data-key]")?.focus()
+        || document.getElementById("amount-display")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    if (!payload.date) {
+      toast.error("日付を入力してください");
+      $("#date")?.focus(); return;
+    }
+    if (!payload.category) {
+      toast.error("カテゴリを選択してください");
+      $(".js-cat")?.focus(); return;
+    }
 
     try {
       if (editingId) { await editExpense(payload); setEditingId(null); }
       else { await addExpense(payload); }
+      toast.success("保存しました");
 
       form.reset();
       $("#payer").value = currentUser;
@@ -110,18 +133,31 @@ function bindEntryForm() {
       await refreshHome();
     } catch (err) {
       console.warn(err);
+      toast.error(err?.message || "保存に失敗しました");
     }
   });
 
   // 詳細→編集の導線
   window.__editExpense = async (exp) => {
     setEditingId(exp.id);
-    $("#payer").value = currentUser;
+    // ★編集では実データの支払者を表示（ドメイン仕様に合わせる）
+    $("#payer").value = exp.payer;
+
     $("#amount").value = exp.amount;
     $("#date").value = exp.date;
     $("#category").value = exp.category;
     $("#memo").value = exp.memo;
+
+    // カテゴリの見た目を同期（チップに .is-active を付け直す）
+    const cat = exp.category;
+    document.querySelectorAll(".js-cat").forEach((c) => {
+      c.classList.toggle("is-active", c.getAttribute("data-cat") === cat);
+    });
+
     show("entry");
+    // テンキー初期化（重複安全）＆表示の同期
+    initAmountNumpad();
+    document.querySelector(".js-numpad")?.__numpadSync?.();
   };
 
   // 削除（トースト等は任意でUI層に委譲）
@@ -129,6 +165,7 @@ function bindEntryForm() {
     await deleteExpense(expId);
     await renderClearanceSummaryAll();
     await refreshHome();
+    toast.success("削除しました");
   };
 }
 
@@ -172,20 +209,41 @@ function exposeDetailHook() {
   const catIcon = (cat = "") => ({ "食費":"🍔","交通":"🚃","日用品":"🛒","娯楽":"🎉","その他":"🗂" }[cat] || "💸");
 
   window.__showExpenseDetail = (exp) => {
-    // 概要
-    q(".js-detail-icon").textContent = catIcon(exp.category);
-    q(".js-detail-category").textContent = exp.category ?? "-";
-    q(".js-detail-amount").textContent = yen(exp.amount);
     // 詳細
-    q(".js-detail-date").textContent = exp.date ?? "-";
-    q(".js-detail-payer").textContent = exp.payer ?? "-";
+    q(".js-detail-date")  .textContent = exp.date ?? "-";
+    q(".js-detail-payer") .textContent = exp.payer ?? "-";
     q(".js-detail-category2").textContent = exp.category ?? "-";
-    q(".js-detail-amount2").textContent = yen(exp.amount);
-    q(".js-detail-memo").textContent = exp.memo ?? "-";
+    q(".js-detail-amount2")  .textContent = yen(exp.amount);
+    q(".js-detail-memo")     .textContent = exp.memo ?? "-";
     q(".js-detail-createdBy").textContent = exp.createdBy ?? "-";
-    q(".js-detail-updated").textContent = exp.lastUpdated
+    q(".js-detail-updated")  .textContent = exp.lastUpdated
       ? new Date(exp.lastUpdated).toLocaleString()
       : "-";
+
     show("detail");
+
+    // ★編集・削除ボタン配線（このタイミングでDOMが存在）
+    const editBtn = q(".js-detail-edit");
+    const delBtn  = q(".js-detail-delete");
+
+    if (editBtn) {
+      editBtn.onclick = () => window.__editExpense?.(exp);
+    }
+    if (delBtn) {
+      delBtn.onclick = async () => {
+        const ok = confirm("この支出を削除しますか？");
+        if (!ok) return;
+        try {
+          await window.__deleteExpense?.(exp.id);
+          toast?.success?.("削除しました");
+          show("home");
+          await renderClearanceSummaryAll?.();
+          await refreshHome?.();
+        } catch (e) {
+          console.warn(e);
+          toast?.error?.("削除に失敗しました");
+        }
+      };
+    }
   };
 }

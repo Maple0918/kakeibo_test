@@ -130,17 +130,39 @@ export async function renderClearanceActions() {
 }
 
 // -------------------------
-// 清算履歴
+// 清算履歴（直近5件 + 空/読込/エラー表示）
 // -------------------------
 export async function renderSettlementHistory() {
-  const ul = $(".js-clearance-history");
+  const ul        = document.querySelector(".js-clearance-history");
+  const emptyEl   = document.querySelector(".js-clearance-empty");
+  const loadingEl = document.querySelector(".js-clearance-loading");
+  const errorEl   = document.querySelector(".js-clearance-error");
   if (!ul) return;
 
+  // 初期状態
   ul.innerHTML = "";
-  try {
-    const items = await listAllSettlements();
-    const frag = document.createDocumentFragment();
+  if (emptyEl)   emptyEl.hidden   = true;
+  if (errorEl)   errorEl.hidden   = true;
+  if (loadingEl) loadingEl.hidden = false;
 
+  try {
+    const all = await listAllSettlements();
+
+    // 読み込み完了
+    if (loadingEl) loadingEl.hidden = true;
+
+    // 直近5件（新しい順）
+    const items = (all || [])
+      .slice()
+      .sort((a, b) => (new Date(b.date || 0)) - (new Date(a.date || 0)))
+      .slice(0, 5);
+
+    if (!items.length) {
+      if (emptyEl) emptyEl.hidden = false; // ← データがありません
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
     items.forEach((st) => {
       const li = document.createElement("li");
       li.className = "c-history-list__item";
@@ -148,10 +170,11 @@ export async function renderSettlementHistory() {
       li.textContent = `[${when}] ${st.applicant}が申請: ${st.directionText}に${formatJPY(st.amount)} (${st.status})`;
       frag.appendChild(li);
     });
-
     ul.appendChild(frag);
+
   } catch (err) {
     console.warn(err);
-    ul.innerHTML = '<li class="c-history-list__item">清算履歴の取得に失敗しました</li>';
+    if (loadingEl) loadingEl.hidden = true;
+    if (errorEl)   errorEl.hidden   = false;
   }
 }

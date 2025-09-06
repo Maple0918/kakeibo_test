@@ -9,6 +9,8 @@
 import { show } from "./router.js";
 import { currentUser } from "./app-state.js";
 
+import { toast } from "../ui/toast.js";
+
 // Service
 import { listAllSettlements, requestSettlement, approveSettlement, rejectSettlement } from "../services/settlements-service.js";
 
@@ -58,7 +60,8 @@ function bindButtons() {
       const who = ($("#current-user") || document.querySelector(".js-current-user"))?.value || currentUser;
       await requestSettlement(who);
       await refreshAll();
-      // show("home"); // 申請後にホームへ戻したい場合は有効化
+      toast.success("清算を申請しました");
+      show("home"); // 申請後にホームへ
     } catch (e) { console.warn(e); }
   });
 
@@ -66,6 +69,8 @@ function bindButtons() {
     try {
       const p = await getPending();
       if (p) { await rejectSettlement(p.id); await refreshAll(); }
+      toast.warn("清算を取り消しました");
+      show("home"); // 申請後にホームへ
     } catch (e) { console.warn(e); }
   });
 
@@ -73,6 +78,8 @@ function bindButtons() {
     try {
       const p = await getPending();
       if (p) { await approveSettlement(p.id); await refreshAll(); }
+      toast.success("清算しました");
+      show("home"); // 申請後にホームへ
     } catch (e) { console.warn(e); }
   });
 
@@ -80,6 +87,8 @@ function bindButtons() {
     try {
       const p = await getPending();
       if (p) { await rejectSettlement(p.id); await refreshAll(); }
+      toast.warn("清算を取り消しました");
+      show("home"); // 申請後にホームへ
     } catch (e) { console.warn(e); }
   });
 

@@ -1,18 +1,16 @@
 /* ========================
  * 基本スタイル
  * ======================== */
-body { 
-  font-family: system-ui, sans-serif; 
-  margin: 0;
-  padding: 20px;
-  background-color: #f8f9fa;
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "YuGothic", Meiryo, "MS PGothic", sans-serif;
+  margin: 20px;
+  padding: 0;
+  background: #f7f7f8;
+  color: #212529;
 }
 
-/* ========================
- * アプリケーション構造
- * ======================== */
+/* アプリラッパー */
 .c-app {
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -24,7 +22,7 @@ body {
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .c-user-switcher {
@@ -33,15 +31,13 @@ body {
   gap: 8px;
 }
 
-.c-user-switcher__label {
-  font-weight: 500;
-}
+.c-user-switcher__label { font-weight: 500; }
 
 .c-user-switcher__select {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  background: white;
+  background: #fff;
 }
 
 /* ========================
@@ -52,13 +48,10 @@ body {
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-.c-nav__actions {
-  display: flex;
-  gap: 8px;
-}
+.c-nav__actions { display: flex; gap: 8px; }
 
 /* ========================
  * ボタン
@@ -66,34 +59,38 @@ body {
 .c-button {
   padding: 10px 16px;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
+  border-radius: 6px;
+  background: #fff;
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: background-color .2s ease, box-shadow .2s ease, transform .05s ease;
 }
-
-.c-button:hover {
-  background: #f8f9fa;
-}
-
+.c-button:hover { background: #f2f4f7; }
+.c-button:active { transform: translateY(1px); }
 .c-button.is-active {
   background: #007bff;
-  color: white;
+  color: #fff;
   border-color: #007bff;
 }
+.c-button:disabled { opacity: .5; cursor: not-allowed; }
 
-.c-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* アイコンボタン */
+.c-icon-button {
+  width: 36px; height: 36px; display: inline-grid; place-items: center;
+  font-size: 18px; padding: 0;
+}
+
+/* FAB（固定位置は必要に応じて） */
+.c-fab {
+  width: 56px; height: 56px; border-radius: 50%;
+  font-size: 24px; display: inline-grid; place-items: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
 }
 
 /* ========================
  * メイン領域
  * ======================== */
-.c-main {
-  min-height: 60vh;
-}
+.c-main { min-height: 60vh; }
 
 /* ========================
  * ビュー（画面）
@@ -102,17 +99,13 @@ body {
   display: none;
   background: #fff;
   padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-
-.c-view.is-active {
-  display: block;
-}
-
+.c-view.is-active { display: block; }
 .c-view__title {
-  margin: 0 0 24px 0;
-  font-size: 24px;
+  margin: 0 0 20px 0;
+  font-size: 22px;
   color: #333;
 }
 
@@ -120,64 +113,58 @@ body {
  * パネル
  * ======================== */
 .c-panel {
-  margin-bottom: 32px;
-  padding: 20px;
+  margin-bottom: 24px;
+  padding: 16px;
   border: 1px solid #e9ecef;
-  border-radius: 6px;
+  border-radius: 10px;
   background: #fafbfc;
 }
-
 .c-panel__title {
-  margin: 0 0 16px 0;
-  font-size: 18px;
+  margin: 0 0 12px 0;
+  font-size: 16px;
   color: #495057;
 }
-
-.c-panel__actions {
-  margin-top: 16px;
-  display: flex;
-  gap: 8px;
-}
+.c-panel__actions { margin-top: 12px; display: flex; gap: 8px; }
 
 /* ========================
  * 通知
  * ======================== */
 .c-notice {
   padding: 12px 16px;
-  border-radius: 4px;
-  margin: 16px 0;
+  border-radius: 8px;
+  margin: 12px 0 0;
+  border: 1px solid transparent;
 }
-
-.c-notice.is-loading {
-  background: #e3f2fd;
-  color: #1976d2;
-  border: 1px solid #bbdefb;
-}
-
-.c-notice.is-error {
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid #ffcdd2;
-}
-
-.c-notice.is-empty {
-  background: #f3e5f5;
-  color: #7b1fa2;
-  border: 1px solid #e1bee7;
-}
+.c-notice.is-loading { background: #e3f2fd; color: #1976d2; border-color: #bbdefb; }
+.c-notice.is-error   { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+.c-notice.is-empty   { background: #f3e5f5; color: #7b1fa2; border-color: #e1bee7; }
 
 /* ========================
- * テーブル
+ * テーブル（スマホ専用横並び）
  * ======================== */
 .c-expense-table-wrapper {
   overflow-x: auto;
-  margin-top: 16px;
+  margin-top: 12px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .c-expense-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 320px;
+}
+
+.c-expense-table__head .c-expense-table__cell {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.c-expense-table__row:nth-child(even) {
+  background: #f8f9fa;
 }
 
 .c-expense-table__cell {
@@ -185,108 +172,191 @@ body {
   padding: 12px 8px;
   text-align: left;
   font-size: 14px;
-}
-
-.c-expense-table__head .c-expense-table__cell {
-  background: #f8f9fa;
-  font-weight: 600;
-  color: #495057;
-}
-
-.c-expense-table__row:nth-child(even) {
-  background: #f8f9fa;
+  vertical-align: middle;
+  min-width: 80px;
 }
 
 /* ========================
  * フォーム
  * ======================== */
-.c-form {
-  max-width: 500px;
-}
 
-.c-form__row {
-  margin-bottom: 20px;
-}
-
+.c-form__row { margin-bottom: 16px; }
 .c-form__label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-  color: #495057;
+  display: block; margin-bottom: 6px; font-weight: 600; color: #495057;
 }
-
 .c-input {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s;
+  width: 100%; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 10px; font-size: 14px;
+  background: #fff; transition: border-color .2s ease, box-shadow .2s ease;
 }
-
 .c-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+.c-input[readonly] { background: #f6f7f9; color: #6c757d; }
+.c-form__actions { margin-top: 24px; }
+
+/* フィールド直下エラー */
+.c-form__error { margin: 6px 0 0; font-size: 12px; color: #c62828; }
+
+/* カテゴリチップ */
+.c-category-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.c-chip {
+  border: 1px solid #ced4da; background: #fff; border-radius: 999px; padding: 8px 12px;
+  cursor: pointer; font-size: 14px; transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.c-chip.is-active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* 今日/昨日ボタンと <input type="date"> を横並び＋折返し */
+.c-form__inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;              /* 端末幅が狭い時に自然に折返し */
+}
+.c-form__inputs .c-button {     /* ボタンはサイズ固定（伸びない） */
+  flex: 0 0 auto;
+}
+.c-form__inputs .c-input[type="date"] {
+  flex: 1 1 160px;              /* 余白があれば広がる */
+  min-width: 160px;             /* つぶれ防止（必要に応じて調整） */
 }
 
-.c-input[readonly] {
-  background: #f8f9fa;
-  color: #6c757d;
-}
-
-.c-form__actions {
-  margin-top: 24px;
+/* 画面専用の軽い行間調整（任意：不要なら削除可） */
+.c-entry-view .c-form__row + .c-form__row {
+  margin-top: 16px;
 }
 
 /* ========================
  * 履歴リスト
  * ======================== */
-.c-history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.c-history-list__item {
-  padding: 12px 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.c-history-list__item:last-child {
-  border-bottom: none;
-}
+.c-history-list { list-style: none; padding: 0; margin: 0; }
+.c-history-list__item { padding: 12px 0; border-bottom: 1px solid #e9ecef; }
+.c-history-list__item:last-child { border-bottom: none; }
 
 /* ========================
  * テキスト
  * ======================== */
-.c-text {
-  margin: 0;
-  color: #495057;
-  line-height: 1.5;
-}
+.c-text { margin: 0; color: #495057; line-height: 1.5; }
 
 /* ========================
- * レスポンシブ調整
+ * テンキー + 金額表示（サンプル準拠）
  * ======================== */
-@media (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
-  
-  .c-nav__actions {
-    flex-direction: column;
-  }
-  
-  .c-button {
-    width: 100%;
-  }
-  
-  .c-expense-table {
-    font-size: 12px;
-  }
-  
-  .c-expense-table__cell {
-    padding: 8px 4px;
-  }
+.c-amount-displaybox {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding: 12px;
+  margin-bottom: 12px;            /* サンプル準拠 */
+  border: 1px solid #ccc;         /* サンプル準拠 */
+  border-radius: 10px;            /* サンプル準拠 */
+  background: #fff;               /* サンプル準拠 */
+}
+.c-amount-formula {
+  font-size: 18px;                /* サンプル準拠 */
+  color: #555;                    /* サンプル準拠 */
+  min-height: 24px;               /* サンプル準拠 */
+}
+.c-amount-value {
+  margin-top: 2px;
+  font-size: 36px;                /* サンプル準拠 */
+  font-weight: 700;               /* サンプル準拠 */
+  color: #111;
+}
+.c-amount-prefix,
+.c-amount-suffix {
+  font-size: 16px;                /* サンプル準拠（.yen） */
+  color: #555;                    /* サンプル準拠 */
+  margin: 0 4px;
+}
+
+.c-numpad {
+  display: grid;                  /* サンプル準拠（grid） */
+  grid-template-columns: repeat(4, 1fr); /* サンプル準拠 */
+  gap: 8px;                       /* サンプル準拠 */
+  max-width: 320px;               /* サンプル準拠 */
+}
+.c-numpad-row { display: contents; }
+
+.c-key {
+  font-size: 24px;                /* サンプル準拠 */
+  padding: 18px 0;                /* サンプル準拠 */
+  border: none;
+  border-radius: 10px;            /* サンプル準拠 */
+  background: #e5e7eb;            /* サンプル準拠 */
+  cursor: pointer;
+  transition: background-color .15s ease, transform .05s ease;
+  user-select: none;
+}
+.c-key:active {
+  background: #d1d5db;           /* サンプル準拠 */
+  transform: translateY(1px);
+}
+.c-key.c-key--warn {
+  background: #ef4444;           /* サンプル準拠 */
+  color: #fff;
+}
+.c-key.c-key--action {
+  background: #2563eb;           /* サンプル準拠 */
+  color: #fff;
+}
+.c-key.c-key--wide { grid-column: span 2; } /* サンプル準拠 */
+
+
+
+
+
+
+/* =========================================================
+ * 1) 主要アクションボタン（緑）／破壊的アクション（赤）
+ *    ─ 既存 .c-button はそのまま。modifier だけ追加 ─
+ * =======================================================*/
+.c-button--primary{
+  background:#22c55e;        /* 緑 */
+  border-color:#22c55e;
+  color:#fff;
+}
+.c-button--primary:hover{ background:#16a34a; border-color:#16a34a; }
+.c-button--primary:active{ filter:saturate(1.1); transform:translateY(1px); }
+.c-button--primary:disabled{ opacity:.5; cursor:not-allowed; }
+
+.c-button--danger{
+  background:#fff;
+  color:#ef4444;              /* 赤 */
+  border-color:#ef4444;
+}
+.c-button--danger:hover{
+  background:#fff5f5;
+  color:#dc2626;
+  border-color:#dc2626;
+}
+
+/* =========================================================
+ * 2) 最小タップサイズ（44x44） ─ 既存UIに上乗せ
+ * =======================================================*/
+button, [role="button"], .c-chip, .c-fab, .c-icon-button{
+  min-width:44px; min-height:44px;
+}
+
+/* =========================================================
+ * 3) FAB：右下固定＋影（HTMLは既存のまま）
+ *    ─ index.html の .c-fab に効く ─
+ * =======================================================*/
+.c-fab{
+  position:fixed;
+  right:16px;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  z-index:8000;               /* コンテンツより前面 */
+  background:#fff;
+  border:1px solid #e5e7eb;
+  transition:transform .12s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.c-fab:hover{ box-shadow:0 10px 30px rgba(0,0,0,.18); background:#f8fafc; }
+.c-fab:active{ transform:translateY(1px) scale(.98); }
+
+
+
+/* =========================================================
+ * 5) トーストの重なり順／セーフエリア（ui/toast.js 用）
+ * =======================================================*/
+#js-toast{
+  z-index:10000 !important;   /* トースト ＞ 固定ボタン ＞ コンテンツ */
+  top:calc(8px + env(safe-area-inset-top));
 }
