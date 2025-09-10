@@ -1,0 +1,232 @@
+/* =======================================
+ * components.css : 再利用可能なUI部品
+ * ======================================= */
+
+/* === ボタン === */
+.c-button {
+  padding: 10px 16px;
+  border: 1px solid var(--c-border-weak);
+  border-radius: var(--radius-s);
+  background: var(--c-white);
+  cursor: pointer;
+  font-size: var(--fz-14);
+  transition: background-color .2s ease, box-shadow .2s ease, transform .05s ease;
+}
+.c-button:hover { background: #f2f4f7; }
+.c-button:active { transform: translateY(1px); }
+.c-button.is-active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+.c-button:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ボタン modifiers（主要/危険） */
+.c-button--primary{
+  background: var(--c-success);
+  border-color: var(--c-success);
+  color:#fff;
+}
+.c-button--primary:hover{ background:#16a34a; border-color:#16a34a; }
+.c-button--primary:active{ filter:saturate(1.1); transform:translateY(1px); }
+.c-button--primary:disabled{ opacity:.5; cursor:not-allowed; }
+
+.c-button--danger{
+  background:#fff;
+  color: var(--c-danger);
+  border-color: var(--c-danger);
+}
+.c-button--danger:hover{
+  background:#fff5f5;
+  color:#dc2626;
+  border-color:#dc2626;
+}
+
+/* アイコンボタン */
+.c-icon-button {
+  width: 36px; height: 36px; display: inline-grid; place-items: center;
+  font-size: 18px; padding: 0;
+}
+
+/* FAB */
+.c-fab {
+  width: 64px; height: 64px; border-radius: 50%;
+  font-size: 24px; display: inline-grid; place-items: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  /* 固定位置（utilitiesに置く案もあるが、コンポーネント依存なのでここに残す） */
+  position:fixed;
+  right:16px;
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  z-index:8000;
+  background:#fff;
+  border:1px solid #e5e7eb;
+  transition:transform .12s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.c-fab:hover{ box-shadow:0 10px 30px rgba(0,0,0,.18); background:#f8fafc; }
+.c-fab:active{ transform:translateY(1px) scale(.98); }
+
+/* === パネル === */
+.c-panel {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid #e9ecef;
+  border-radius: var(--radius-l);
+  background: #fafbfc;
+}
+.c-panel__title {
+  margin: 0 0 12px 0;
+  font-size: var(--fz-16);
+  color: #495057;
+}
+.c-panel__actions { margin-top: 12px; display: flex; gap: var(--space-1); }
+
+/* === 通知 === */
+.c-notice {
+  padding: 12px 16px;
+  border-radius: var(--radius-m);
+  margin: 12px 0 0;
+  border: 1px solid transparent;
+}
+.c-notice.is-loading { background: #f0f9ff; color: #0277bd; border-color: #b3e5fc; }
+.c-notice.is-error   { background: #fff8f6; color: #d32f2f; border-color: #f8bbd0; }
+.c-notice.is-empty   { background: #fafafa; color: #616161; border-color: #e0e0e0; }
+
+/* === テーブル（スマホ横スクロール） === */
+.c-expense-table-wrapper {
+  overflow-x: auto;
+  margin-top: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.c-expense-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 320px;
+}
+
+.c-expense-table__head .c-expense-table__cell {
+  background: var(--c-accent);
+  font-weight: 600;
+  color: #495057;
+  position: sticky; top: 0; z-index: 10;
+}
+.c-expense-table__row:nth-child(even) { background: #f8f9fa; }
+.c-expense-table__cell {
+  border: 1px solid #dee2e6;
+  padding: 12px 8px;
+  text-align: left;
+  font-size: var(--fz-14);
+  vertical-align: middle;
+  min-width: 80px;
+}
+
+/* === フォーム === */
+.c-form__row { margin-bottom: var(--space-3); }
+.c-form__label {
+  display: block; margin-bottom: 6px; font-weight: 600; color: #495057;
+}
+.c-input {
+  width: 100%; padding: 10px 12px; border: 1px solid #ced4da; border-radius: var(--radius-l);
+  font-size: var(--fz-14);
+  background: #fff; transition: border-color .2s ease, box-shadow .2s ease;
+}
+.c-input:focus {
+  outline: none; border-color: var(--c-primary); box-shadow: 0 0 0 2px var(--c-primary-weak);
+}
+.c-input[readonly] { background: #f6f7f9; color: #6c757d; }
+.c-form__actions { margin-top: var(--space-4); }
+
+.c-form__error { margin: 6px 0 0; font-size: var(--fz-12); color: #c62828; }
+
+.c-category-picker { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.c-chip {
+  border: 1px solid #ced4da; background: #fff; border-radius: 999px; padding: 8px 12px;
+  cursor: pointer; font-size: var(--fz-14);
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.c-chip.is-active { background: var(--c-primary); color: #fff; border-color: var(--c-primary); }
+
+/* 横並び入力群 */
+.c-form__inputs {
+  display: flex; align-items: center; gap: var(--space-1); flex-wrap: wrap;
+}
+.c-form__inputs .c-button { flex: 0 0 auto; }
+.c-form__inputs .c-input[type="date"] {
+  flex: 1 1 160px; min-width: 160px;
+}
+
+/* 画面専用の軽い行間（Entryビュー） */
+.c-entry-view .c-form__row + .c-form__row { margin-top: var(--space-3); }
+
+/* === 履歴リスト === */
+.c-history-list { list-style: none; padding: 0; margin: 0; }
+.c-history-list__item { padding: 12px 0; border-bottom: 1px solid #e9ecef; }
+.c-history-list__item:last-child { border-bottom: none; }
+
+/* === テキスト === */
+.c-text { margin: 0; color: #495057; line-height: 1.5; }
+
+/* === テンキー + 金額表示 === */
+.c-amount-displaybox {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: var(--radius-l);
+  background: #fff;
+}
+.c-amount-formula {
+  font-size: var(--fz-18);
+  color: #555;
+  min-height: 24px;
+}
+.c-amount-value {
+  margin-top: 2px;
+  font-size: var(--fz-36);
+  font-weight: 700;
+  color: #111;
+}
+.c-amount-prefix,
+.c-amount-suffix {
+  font-size: var(--fz-16);
+  color: #555;
+  margin: 0 4px;
+}
+
+.c-numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-width: 320px;
+}
+.c-numpad-row { display: contents; }
+
+.c-key {
+  font-size: 24px;
+  padding: 18px 0;
+  border: none;
+  border-radius: var(--radius-l);
+  background: #e5e7eb;
+  cursor: pointer;
+  transition: background-color .15s ease, transform .05s ease;
+  user-select: none;
+}
+.c-key:active {
+  background: #d1d5db;
+  transform: translateY(1px);
+}
+.c-key.c-key--warn {
+  background: var(--c-danger);
+  color: #fff;
+}
+.c-key.c-key--action {
+  background: var(--c-primary);
+  color: #fff;
+}
+.c-key.c-key--wide { grid-column: span 2; }
+
+/* === トースト（重なり） === */
+#js-toast{
+  z-index:10000 !important;
+  top:calc(8px + env(safe-area-inset-top));
+}

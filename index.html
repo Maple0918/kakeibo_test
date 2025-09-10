@@ -7,24 +7,27 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
   <title>2人用支出管理アプリ</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/utilities.css">
+
 </head>
 <body class="c-app">
 
   <!-- ヘッダー：アプリ名／ログインユーザ／設定 -->
   <header class="c-app-header" role="banner">
-    <div class="c-app-header__left">
-      <h1 class="c-app-title">2人用支出管理</h1>
+    <div class="c-app-header_left">
+      <h1 class="c-app-title js-route" data-view="home">2人用支出管理</h1>
     </div>
-    <div class="c-app-header__right">
-      <label for="current-user" class="c-user-switcher__label">ログイン:</label>
-      <select id="current-user" class="c-user-switcher__select js-current-user"></select>
+    <div class="c-app-header_right">
       <button class="c-button c-icon-button js-route" data-view="settings" aria-controls="view-settings" title="設定">⚙️</button>
     </div>
   </header>
 
   <!-- ナビ（デバッグ用） -->
-  <nav class="c-nav" aria-label="主ナビゲーション">
+  <nav class="c-nav u-hidden" aria-label="主ナビゲーション" id="main-nav">
+    <h2 class="c-view__title">デバッグ用</h2>
     <div class="c-nav__actions">
       <button class="c-button js-route" data-view="home" aria-controls="view-home">ホーム</button>
       <button class="c-button js-route" data-view="entry" aria-controls="view-entry">支出登録</button>
@@ -32,6 +35,8 @@
       <button class="c-button js-route" data-view="settings" aria-controls="view-settings">設定</button>
       <button class="c-button js-route" data-view="detail" aria-controls="view-detail">詳細／編集</button>
     </div>
+      <label for="current-user" >ログイン:</label>
+      <select id="current-user" class="js-current-user"></select>
   </nav>
 
   <main class="c-main" role="main">
@@ -48,7 +53,11 @@
   <!-- メイン1：差額サマリー（表示のみ） -->
   <section class="c-panel" aria-labelledby="clearance-summary-title">
     <h3 id="clearance-summary-title" class="c-panel__title">差額サマリー</h3>
-    <p class="c-text js-clearance-info">差額計算中...</p>
+    <p class="c-text js-clearance-info u-mb-4">差額計算中...</p>
+    <p class="c-text js-clearance-state u-mb-4" aria-live="polite"></p>
+    <button class="c-button js-route" data-view="clearance" aria-controls="view-clearance">
+      清算についてみる
+    </button>  
   </section>
 
   <!-- メイン2：支出一覧（10件まではJSで制御） -->
@@ -87,13 +96,7 @@
 
 
   <!-- メイン3：主要アクション（清算へ） -->
-  <section class="c-panel" aria-label="主要アクション">
-    <div class="c-panel__actions">
-      <button class="c-button c-button--primary js-route" data-view="clearance" aria-controls="view-clearance">
-        清算する
-      </button>
-    </div>
-  </section>
+  <!-- 要素なし -->
 </section>
 
 <!-- 2) 支出入力 -->
@@ -322,12 +325,8 @@
       <h2 id="settings-title" class="c-view__title">⚙️ 設定</h2>
 
       <section class="c-panel">
-        <ul class="c-list">
-          <li>ユーザー名変更（準備中）</li>
-          <li>カテゴリ編集（準備中）</li>
-          <li>データエクスポート（準備中）</li>
-          <li>ユーザー識別色変更（将来拡張）</li>
-        </ul>
+        <label>デバックモード</label>
+        <input type="checkbox" id="debug-toggle" class="js-debug-toggle">
       </section>
     </section>
 

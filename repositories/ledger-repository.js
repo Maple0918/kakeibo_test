@@ -1,17 +1,109 @@
 // ========================
-// DB層：台帳仕訳
-// 今は配列、将来はAPIに置換
+// データアクセス層（Repository層）：台帳仕訳データの管理
+// repositories/ledger-repository.js
+// 役割：会計仕訳データの永続化を担当
+// 特徴：
+// - 台帳（複式簿記の基本概念）：全ての取引を記録する帳簿
+// - 仕訳（しわけ）：取引を借方・貸方で記録する会計の基本単位
+// - 現在はメモリ内配列でモック実装
+// - 将来的にはAPI通信に置き換え可能な設計
 // ========================
 
+// ================
+// 設定とデータストア
+// ================
+
+// API使用フラグ：true にするとAPI通信、false だとローカル配列を使用
 const USE_API = false;
+
+// インメモリ台帳データストア（モック用）
+// 実際のアプリケーションでは、会計データベースが担当する部分
+// 仕訳データ構造：{id, user, delta, kind, refId, ts}
+// - id: 仕訳の一意識別子
+// - user: 対象ユーザー（"Aさん" または "Bさん"）
+// - delta: 増減額（正の値=増加、負の値=減少）
+// - kind: 仕訳種別（"expense"=支出、"settlement"=清算、"reversal"=逆仕訳）
+// - refId: 参照元ID（支出IDや清算IDなど）
+// - ts: タイムスタンプ（仕訳の作成日時）
 let _entries = [];
 
+// ========================
+// データ操作関数群
+// ========================
+
+/**
+ * 全ての仕訳データを取得する
+ * @returns {Promise<Array>} 仕訳データの配列
+ * 
+ * 用途：
+ * - ユーザー別残高の計算
+ * - 逆仕訳作成時の対象仕訳検索
+ * - 会計監査や履歴確認
+ * 
+ * 現在の実装：
+ * - ローカル配列をコピーして返す（元データの保護）
+ * - 全期間・全種別の仕訳を取得
+ * 
+ * 台帳の重要な特徴：
+ * - 一度記録された仕訳は削除しない（台帳方式の原則）
+ * - 修正は逆仕訳で相殺する
+ * - 全ての取引履歴が時系列で保存される
+ */
 export async function listEntries() {
-  if (!USE_API) return [..._entries];
-  // fetch GET ...
+  if (!USE_API) {
+    // 配列のコピーを返す（元データの意図しない変更を防ぐ）
+    return [..._entries];
+  }
+  
+  // ================
+  // 将来のAPI実装例
+  // ================
+  // const res = await fetch("/api/ledger/entries", { 
+  //   credentials: "include"  // 認証クッキーを含む
+  // });
+  // return await res.json();
 }
 
+/**
+ * 仕訳データを台帳に追加する
+ * @param {Array} entries - 追加する仕訳データの配列
+ * @returns {Promise<Array>} 追加された仕訳データ
+ * 
+ * 重要な特徴：
+ * - 複数の仕訳を一度に追加（トランザクション的な処理）
+ * - 既存データは変更せず、常に追記のみ
+ * - 台帳方式：過去のデータは削除・変更しない
+ * 
+ * 使用例：
+ * - 支出時：支払者+相手の2つの仕訳を同時追加
+ * - 清算時：支払者+受取者の2つの仕訳を同時追加
+ * - 逆仕訳時：対象仕訳と同数の逆仕訳を同時追加
+ * 
+ * なぜ配列で受け取るか：
+ * - 複式簿記では1つの取引が複数の仕訳を生成
+ * - 関連する仕訳は原子的（分割不可）に処理する必要
+ * - データの整合性を保つため
+ * 
+ * 現在の実装：
+ * - スプレッド演算子で配列に一括追加
+ * - 追加されたデータをそのまま返す
+ */
 export async function appendEntries(entries) {
-  if (!USE_API) { _entries.push(...entries); return entries; }
-  // fetch POST ...
+  if (!USE_API) { 
+    // スプレッド演算子で配列の全要素を既存配列に追加
+    // push(...entries) は push(entries[0], entries[1], ...) と同等
+    _entries.push(...entries); 
+    return entries; // 追加されたデータを返す
+  }
+  
+  // ================
+  // 将来のAPI実装例
+  // ================
+  // const res = await fetch("/api/ledger/entries", {
+  //   method: "POST",                                // POST：新規作成
+  //   headers: { "Content-Type": "application/json" }, // JSON形式で送信
+  //   credentials: "include",                        // 認証情報を含む
+  //   body: JSON.stringify(entries),                 // 仕訳配列をJSON文字列に変換
+  // });
+  // return await res.json();                         // サーバーからの応答を返す
 }
